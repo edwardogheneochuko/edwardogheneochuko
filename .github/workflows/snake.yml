@@ -2,7 +2,7 @@ name: GitHub Snake Game
 
 on:
   schedule:
-    - cron: "0 0 * * *" # runs daily at midnight UTC
+    - cron: "0 0 * * *" # daily at midnight UTC
   workflow_dispatch:
   push:
     branches:
@@ -14,21 +14,15 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      # 1. Checkout your repo
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      # 3. Make sure dist folder exists
+      # 2️⃣ Create dist folder
       - name: Create dist folder
         run: mkdir -p dist
 
-      # 4. Generate GitHub Snake animations
+      # 3️⃣ Generate GitHub Snake animations
       - name: Generate GitHub Snake
         uses: Platane/snk@v3
         with:
@@ -40,7 +34,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
-      # 5. Deploy generated files to output branch
+      # 4️⃣ Update README with GIF
+      - name: Update README
+        run: |
+          GIF_PATH="dist/ocean.gif"
+          README_FILE="README.md"
+          
+          # Check if README exists
+          if [ ! -f "$README_FILE" ]; then
+            echo "# GitHub Snake" > $README_FILE
+          fi
+
+          # Remove previous GIF line if exists
+          sed -i '/!\[Snake GIF\]/d' $README_FILE
+
+          # Add the new GIF at the top
+          sed -i "1i ![Snake GIF]($GIF_PATH)" $README_FILE
+
+      # 5️⃣ Deploy to output branch
       - name: Deploy to output branch
         uses: peaceiris/actions-gh-pages@v3
         with:
