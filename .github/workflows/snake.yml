@@ -2,7 +2,7 @@ name: GitHub Snake Game
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *" # runs daily at midnight UTC
   workflow_dispatch:
   push:
     branches:
@@ -14,17 +14,21 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      # 1. Checkout your repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      # 2. Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # 3. Make sure dist folder exists
       - name: Create dist folder
         run: mkdir -p dist
 
+      # 4. Generate GitHub Snake animations
       - name: Generate GitHub Snake
         uses: Platane/snk@v3
         with:
@@ -34,12 +38,13 @@ jobs:
             dist/github-snake-dark.svg
             dist/ocean.gif
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
+      # 5. Deploy generated files to output branch
       - name: Deploy to output branch
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_TOKEN }}
           publish_dir: ./dist
           publish_branch: output
           commit_message: "Update snake animation [skip ci]"
