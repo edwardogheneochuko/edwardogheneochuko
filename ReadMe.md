@@ -30,7 +30,6 @@ I thrive in collaborative environments where I can contribute to impactful produ
 
 ---
 
-## 👀 Profile Views
 [![](https://visitcount.itsvg.in/api?id=edwardogheneochuko&icon=0&color=0)](https://visitcount.itsvg.in)
 
 ---
